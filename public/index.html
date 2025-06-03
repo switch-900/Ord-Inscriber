@@ -3,20 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ordinals Inscriber</title>
+    <title>Ord Inscriber</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🎨 Ordinals Inscriber</h1>
-            <p>Inscribe content permanently on the Bitcoin blockchain</p>
+            <img src="icon.svg" alt="Ordinals Inscriber Logo" class="site-logo" style="height: 2em; vertical-align: middle; margin-right: 0.5em;">
+            <h1>Ordinals Inscriber</h1>
+            <p>Complete Bitcoin Ordinals Management Interface</p>
+            <nav class="tab-navigation">
+                <button class="tab-btn active" data-tab="inscribe">📝 Inscribe</button>
+                <button class="tab-btn" data-tab="manage">🗂️ Manage</button>
+                <button class="tab-btn" data-tab="send">📤 Send</button>
+                <button class="tab-btn" data-tab="wallet">💰 Wallet</button>
+            </nav>
         </header>
 
         <div class="status-bar">
             <div class="status-item">
-                <span class="label">Wallet Balance:</span>
+                <span class="label">Balance:</span>
                 <span id="balance" class="value">Loading...</span>
+            </div>
+            <div class="status-item">
+                <span class="label">Inscriptions:</span>
+                <span id="totalInscriptions" class="value">Loading...</span>
             </div>
             <div class="status-item">
                 <span class="label">Status:</span>
@@ -24,73 +35,209 @@
             </div>
         </div>
 
-        <div class="main-content">
-            <div class="upload-section">
-                <h2>📁 Upload Content</h2>
-                <div class="upload-area" id="uploadArea">
-                    <div class="upload-placeholder">
-                        <div class="upload-icon">📎</div>
-                        <p>Drag & drop your file here or click to browse</p>
-                        <p class="upload-hint">Supported: Images, Text, JSON, any file up to 10MB</p>
+        <!-- Inscribe Tab -->
+        <div id="inscribe-tab" class="tab-content active">
+            <div class="main-content">
+                <div class="upload-section">
+                    <h2>📁 Upload Content</h2>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-placeholder">
+                            <div class="upload-icon">📎</div>
+                            <p>Drag & drop your file here or click to browse</p>
+                            <p class="upload-hint">Supported: Images, Text, JSON, any file up to 10MB</p>
+                        </div>
+                        <input type="file" id="fileInput" hidden>
+                        <input type="file" id="batchFileInput" multiple hidden>
                     </div>
-                    <input type="file" id="fileInput" hidden>
+                    
+                    <div class="upload-mode">
+                        <label>
+                            <input type="radio" name="uploadMode" value="single" checked>
+                            Single File
+                        </label>
+                        <label>
+                            <input type="radio" name="uploadMode" value="batch">
+                            Batch Upload
+                        </label>
+                    </div>
+                    
+                    <div class="file-info" id="fileInfo" style="display: none;">
+                        <div class="file-details">
+                            <span class="file-name" id="fileName"></span>
+                            <span class="file-size" id="fileSize"></span>
+                        </div>
+                        <button class="remove-file" id="removeFile">✕</button>
+                    </div>
+
+                    <div class="batch-files" id="batchFiles" style="display: none;">
+                        <h3>Selected Files:</h3>
+                        <div id="batchFileList"></div>
+                    </div>
                 </div>
-                
-                <div class="file-info" id="fileInfo" style="display: none;">
-                    <div class="file-details">
-                        <span class="file-name" id="fileName"></span>
-                        <span class="file-size" id="fileSize"></span>
+
+                <div class="options-section">
+                    <h2>⚙️ Inscription Options</h2>
+                    
+                    <div class="form-group">
+                        <label for="feeRate">Fee Rate (sats/vB)</label>
+                        <div class="fee-selector">
+                            <button class="fee-btn" data-fee="1">🐌 Slow (1)</button>
+                            <button class="fee-btn active" data-fee="5">🚀 Medium (5)</button>
+                            <button class="fee-btn" data-fee="10">⚡ Fast (10)</button>
+                        </div>
+                        <input type="number" id="feeRate" value="5" min="1" max="1000">
                     </div>
-                    <button class="remove-file" id="removeFile">✕</button>
+
+                    <div class="form-group">
+                        <label for="destination">Destination Address (Optional)</label>
+                        <input type="text" id="destination" placeholder="bc1q... (leave empty to use wallet address)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="metaprotocol">Metaprotocol (Optional)</label>
+                        <input type="text" id="metaprotocol" placeholder="e.g. json, text/plain">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="postage">Postage (satoshis)</label>
+                        <input type="number" id="postage" value="10000" min="546">
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="compress">
+                            <span class="checkmark"></span>
+                            Compress with Brotli
+                        </label>
+                    </div>
+                </div>
+
+                <div class="action-section">
+                    <div class="cost-estimate">
+                        <span class="label">Estimated Cost:</span>
+                        <span id="estimatedCost" class="value">~0.0001 BTC</span>
+                    </div>
+                    
+                    <button id="inscribeBtn" class="inscribe-btn" disabled>
+                        🎯 Create Inscription
+                    </button>
                 </div>
             </div>
+        </div>
 
-            <div class="options-section">
-                <h2>⚙️ Inscription Options</h2>
+        <!-- Manage Tab -->
+        <div id="manage-tab" class="tab-content">
+            <div class="manage-content">
+                <div class="manage-header">
+                    <h2>🗂️ Your Inscriptions</h2>
+                    <button id="refreshInscriptions" class="refresh-btn">🔄 Refresh</button>
+                </div>
                 
-                <div class="form-group">
-                    <label for="feeRate">Fee Rate (sats/vB)</label>
-                    <div class="fee-selector">
-                        <button class="fee-btn" data-fee="1">🐌 Slow (1)</button>
-                        <button class="fee-btn active" data-fee="5">🚀 Medium (5)</button>
-                        <button class="fee-btn" data-fee="10">⚡ Fast (10)</button>
-                    </div>
-                    <input type="number" id="feeRate" value="5" min="1" max="1000">
-                </div>
-
-                <div class="form-group">
-                    <label for="destination">Destination Address (Optional)</label>
-                    <input type="text" id="destination" placeholder="bc1q... (leave empty to use wallet address)">
-                </div>
-
-                <div class="form-group">
-                    <label for="metaprotocol">Metaprotocol (Optional)</label>
-                    <input type="text" id="metaprotocol" placeholder="e.g. json, text/plain">
-                </div>
-
-                <div class="form-group">
-                    <label for="postage">Postage (satoshis)</label>
-                    <input type="number" id="postage" value="10000" min="546">
-                </div>
-
-                <div class="form-group checkbox-group">
-                    <label>
-                        <input type="checkbox" id="compress">
-                        <span class="checkmark"></span>
-                        Compress with Brotli
-                    </label>
+                <div class="inscriptions-grid" id="inscriptionsGrid">
+                    <div class="loading-placeholder">Loading inscriptions...</div>
                 </div>
             </div>
+        </div>
 
-            <div class="action-section">
-                <div class="cost-estimate">
-                    <span class="label">Estimated Cost:</span>
-                    <span id="estimatedCost" class="value">~0.0001 BTC</span>
+        <!-- Send Tab -->
+        <div id="send-tab" class="tab-content">
+            <div class="send-content">
+                <div class="send-options">
+                    <div class="send-type-selector">
+                        <button class="send-type-btn active" data-type="inscription">📜 Send Inscription</button>
+                        <button class="send-type-btn" data-type="sats">₿ Send Sats</button>
+                    </div>
+
+                    <div id="send-inscription-form" class="send-form">
+                        <h3>Send Inscription</h3>
+                        <div class="form-group">
+                            <label for="sendInscriptionId">Inscription ID</label>
+                            <select id="sendInscriptionId">
+                                <option value="">Select an inscription...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sendInscriptionDestination">Destination Address</label>
+                            <input type="text" id="sendInscriptionDestination" placeholder="bc1q..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sendInscriptionFeeRate">Fee Rate (sats/vB)</label>
+                            <input type="number" id="sendInscriptionFeeRate" value="5" min="1" max="1000">
+                        </div>
+                        <button id="sendInscriptionBtn" class="action-btn">📤 Send Inscription</button>
+                    </div>
+
+                    <div id="send-sats-form" class="send-form" style="display: none;">
+                        <h3>Send Sats</h3>
+                        <div class="form-group">
+                            <label for="sendSatsAmount">Amount (sats)</label>
+                            <input type="number" id="sendSatsAmount" placeholder="10000" min="546" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sendSatsDestination">Destination Address</label>
+                            <input type="text" id="sendSatsDestination" placeholder="bc1q..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sendSatsFeeRate">Fee Rate (sats/vB)</label>
+                            <input type="number" id="sendSatsFeeRate" value="5" min="1" max="1000">
+                        </div>
+                        <button id="sendSatsBtn" class="action-btn">💸 Send Sats</button>
+                    </div>
                 </div>
-                
-                <button id="inscribeBtn" class="inscribe-btn" disabled>
-                    🎯 Create Inscription
-                </button>
+            </div>
+        </div>
+
+        <!-- Wallet Tab -->
+        <div id="wallet-tab" class="tab-content">
+            <div class="wallet-content">
+                <div class="wallet-section">
+                    <h2>💰 Wallet Information</h2>
+                    <div class="wallet-info">
+                        <div class="info-item">
+                            <span class="label">Receive Address:</span>
+                            <span id="receiveAddress" class="value monospace">Loading...</span>
+                            <button id="copyAddress" class="copy-btn">📋</button>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Balance:</span>
+                            <span id="walletBalance" class="value">Loading...</span>
+                        </div>
+                    </div>
+                    
+                    <div class="wallet-actions">
+                        <button id="createAddressBtn" class="action-btn">📍 Create New Address</button>
+                        <button id="viewOutputsBtn" class="action-btn">🔍 View UTXOs</button>
+                        <button id="viewTransactionsBtn" class="action-btn">📋 View Transactions</button>
+                    </div>
+                </div>
+
+                <div class="advanced-section">
+                    <h3>🔧 Advanced Operations</h3>
+                    
+                    <div class="advanced-actions">
+                        <div class="action-group">
+                            <h4>Runes</h4>
+                            <div class="rune-mint">
+                                <input type="text" id="runeToMint" placeholder="RUNE•NAME">
+                                <button id="mintRuneBtn" class="action-btn">⚡ Mint Rune</button>
+                            </div>
+                        </div>
+
+                        <div class="action-group">
+                            <h4>Wallet Management</h4>
+                            <button id="dumpWalletBtn" class="action-btn">💾 Export Wallet</button>
+                            <button id="restoreWalletBtn" class="action-btn">📁 Import Wallet</button>
+                        </div>
+
+                        <div class="action-group">
+                            <h4>Message Signing</h4>
+                            <div class="sign-message">
+                                <input type="text" id="messageToSign" placeholder="Message to sign">
+                                <button id="signMessageBtn" class="action-btn">✍️ Sign Message</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -98,51 +245,45 @@
             <h2>📋 Recent Activity</h2>
             <div id="activityList" class="activity-list">
                 <div class="activity-placeholder">
-                    No recent inscriptions
-                </div>
-            </div>
-        </div>
-
-        <div class="wallet-section">
-            <h2>💰 Wallet Info</h2>
-            <div class="wallet-info">
-                <div class="info-item">
-                    <span class="label">Receive Address:</span>
-                    <span id="receiveAddress" class="value monospace">Loading...</span>
-                    <button id="copyAddress" class="copy-btn">📋</button>
-                </div>
-                <div class="info-item">
-                    <span class="label">Total Inscriptions:</span>
-                    <span id="totalInscriptions" class="value">Loading...</span>
+                    No recent activity
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Loading Modal -->
+    <!-- Modals -->
     <div id="loadingModal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="loading-spinner"></div>
-            <h3>Creating Inscription</h3>
-            <p id="loadingMessage">Preparing transaction...</p>
+            <h3 id="loadingTitle">Processing...</h3>
+            <p id="loadingMessage">Please wait...</p>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
         </div>
     </div>
 
-    <!-- Result Modal -->
     <div id="resultModal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="result-header">
-                <h3 id="resultTitle">Inscription Created!</h3>
+                <h3 id="resultTitle">Success!</h3>
                 <button class="close-btn" id="closeResult">✕</button>
             </div>
-            <div id="resultContent" class="result-content">
-                <!-- Result content will be populated by JavaScript -->
-            </div>
+            <div id="resultContent" class="result-content"></div>
         </div>
     </div>
+
+    <div id="inscriptionModal" class="modal" style="display: none;">
+        <div class="modal-content large">
+            <div class="result-header">
+                <h3 id="inscriptionModalTitle">Inscription Details</h3>
+                <button class="close-btn" id="closeInscriptionModal">✕</button>
+            </div>
+            <div id="inscriptionModalContent" class="inscription-details"></div>
+        </div>
+    </div>
+
+    <input type="file" id="restoreFileInput" accept=".json" hidden>
 
     <script src="script.js"></script>
 </body>
