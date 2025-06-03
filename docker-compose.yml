@@ -8,6 +8,8 @@ services:
       APP_PORT: 3333
 
   web:
+    # TODO: Update this to your Docker Hub username before app store submission
+    # Example: switch900/ordinals-inscriber:v1.0.0
     image: getumbrel/ordinals-inscriber:v1.0.0
     restart: on-failure
     stop_grace_period: 1m

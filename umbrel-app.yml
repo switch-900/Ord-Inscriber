@@ -31,8 +31,8 @@ developer: Community
 website: https://ordinals.com
 dependencies:
   - bitcoin
-repo: https://github.com/crowh/OrdInscriber
-support: https://github.com/crowh/OrdInscriber/issues
+repo: https://github.com/switch-900/OrdInscriber
+support: https://github.com/switch-900/OrdInscriber/issues
 port: 3333
 gallery:
   - 1.jpg

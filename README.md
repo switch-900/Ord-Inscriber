@@ -19,35 +19,46 @@ A user-friendly web interface for creating Bitcoin Ordinal inscriptions on your 
 - Documents (PDF, HTML)
 - Any file up to 10MB
 
-## 🚀 Deployment Guide
+## 🚀 Quick Deployment
 
-### For App Store Submission
+### Option 1: Add to Umbrel (Recommended)
+```bash
+# SSH into your Umbrel node
+sudo ~/umbrel/scripts/app add-repo https://github.com/switch-900/OrdInscriber
+sudo ~/umbrel/scripts/app install ordinals-inscriber
+```
 
-1. **Build Docker Image**:
-   ```bash
-   # Set your Docker Hub username
-   export DOCKER_HUB_USER=yourusername
-   
-   # Build and tag
-   ./build.sh
-   
-   # Push to Docker Hub
-   docker push $DOCKER_HUB_USER/ordinals-inscriber:latest
-   docker push $DOCKER_HUB_USER/ordinals-inscriber:v1.0.0
-   ```
+### Option 2: Manual Installation
+```bash
+# Clone and build locally
+git clone https://github.com/switch-900/OrdInscriber
+cd OrdInscriber
+docker build -t ordinals-inscriber .
+docker run -p 3333:3333 ordinals-inscriber
+```
 
-2. **Create Gallery Images**:
-   - Add app icon as `gallery/icon.svg`
-   - Add screenshots as `gallery/gallery-1.jpg`, etc.
-   - See `gallery/README.md` for guidelines
+### Troubleshooting
+If you get "Repository already exists" error, see `UMBREL_TROUBLESHOOTING.md` or run `umbrel-fix.sh` on your Umbrel node.
 
-3. **Submit to Umbrel Community Apps**:
-   - Fork the [getumbrel/umbrel-community-app-store](https://github.com/getumbrel/umbrel-community-app-store) repository
-   - Create a new app directory
-   - Copy `umbrel-app.yml` and `gallery/` folder
-   - Submit pull request
+## 📋 Requirements
 
-### For Local Development
+- **Umbrel Node**: Running Bitcoin Core
+- **ord binary**: Must be installed at `/usr/local/bin/ord`
+- **Storage**: ~100MB for app, additional space for inscriptions
+
+## 🛠️ For Developers
+
+### Build Docker Image
+```bash
+docker build -t ordinals-inscriber .
+```
+
+### Development Mode
+```bash
+npm install
+npm start
+# Visit http://localhost:3333
+```
 
 1. **Prerequisites**:
    - Umbrel node with Bitcoin Core synced
