@@ -1,7 +1,8 @@
-FROM node:18-alpine
+FROM node:18.20.4-alpine3.20
 
-# Install required packages
-RUN apk add --no-cache curl
+# Install required packages and security updates
+RUN apk add --no-cache curl && \
+    apk upgrade --no-cache
 
 WORKDIR /app
 COPY package*.json ./
