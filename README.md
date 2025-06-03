@@ -4,6 +4,10 @@
 
 A user-friendly web interface for creating Bitcoin Ordinal inscriptions on your Umbrel node.
 
+## Gallery
+
+| ![Screenshot 1](gallery/1.png) | ![Screenshot 2](gallery/2.png) | ![Screenshot 3](gallery/3.png) |
+
 ## Features
 
 - 🎨 **Simple File Upload**: Drag-and-drop interface for easy file selection
