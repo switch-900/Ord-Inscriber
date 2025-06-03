@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordinals Inscriber</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Ordinals Inscriber</h1>
+            <p>Inscribe content permanently on the Bitcoin blockchain</p>
+        </header>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <span class="label">Wallet Balance:</span>
+                <span id="balance" class="value">Loading...</span>
+            </div>
+            <div class="status-item">
+                <span class="label">Status:</span>
+                <span id="status" class="value connected">Connected</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="upload-section">
+                <h2>📁 Upload Content</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-placeholder">
+                        <div class="upload-icon">📎</div>
+                        <p>Drag & drop your file here or click to browse</p>
+                        <p class="upload-hint">Supported: Images, Text, JSON, any file up to 10MB</p>
+                    </div>
+                    <input type="file" id="fileInput" hidden>
+                </div>
+                
+                <div class="file-info" id="fileInfo" style="display: none;">
+                    <div class="file-details">
+                        <span class="file-name" id="fileName"></span>
+                        <span class="file-size" id="fileSize"></span>
+                    </div>
+                    <button class="remove-file" id="removeFile">✕</button>
+                </div>
+            </div>
+
+            <div class="options-section">
+                <h2>⚙️ Inscription Options</h2>
+                
+                <div class="form-group">
+                    <label for="feeRate">Fee Rate (sats/vB)</label>
+                    <div class="fee-selector">
+                        <button class="fee-btn" data-fee="1">🐌 Slow (1)</button>
+                        <button class="fee-btn active" data-fee="5">🚀 Medium (5)</button>
+                        <button class="fee-btn" data-fee="10">⚡ Fast (10)</button>
+                    </div>
+                    <input type="number" id="feeRate" value="5" min="1" max="1000">
+                </div>
+
+                <div class="form-group">
+                    <label for="destination">Destination Address (Optional)</label>
+                    <input type="text" id="destination" placeholder="bc1q... (leave empty to use wallet address)">
+                </div>
+
+                <div class="form-group">
+                    <label for="metaprotocol">Metaprotocol (Optional)</label>
+                    <input type="text" id="metaprotocol" placeholder="e.g. json, text/plain">
+                </div>
+
+                <div class="form-group">
+                    <label for="postage">Postage (satoshis)</label>
+                    <input type="number" id="postage" value="10000" min="546">
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="compress">
+                        <span class="checkmark"></span>
+                        Compress with Brotli
+                    </label>
+                </div>
+            </div>
+
+            <div class="action-section">
+                <div class="cost-estimate">
+                    <span class="label">Estimated Cost:</span>
+                    <span id="estimatedCost" class="value">~0.0001 BTC</span>
+                </div>
+                
+                <button id="inscribeBtn" class="inscribe-btn" disabled>
+                    🎯 Create Inscription
+                </button>
+            </div>
+        </div>
+
+        <div class="activity-section">
+            <h2>📋 Recent Activity</h2>
+            <div id="activityList" class="activity-list">
+                <div class="activity-placeholder">
+                    No recent inscriptions
+                </div>
+            </div>
+        </div>
+
+        <div class="wallet-section">
+            <h2>💰 Wallet Info</h2>
+            <div class="wallet-info">
+                <div class="info-item">
+                    <span class="label">Receive Address:</span>
+                    <span id="receiveAddress" class="value monospace">Loading...</span>
+                    <button id="copyAddress" class="copy-btn">📋</button>
+                </div>
+                <div class="info-item">
+                    <span class="label">Total Inscriptions:</span>
+                    <span id="totalInscriptions" class="value">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loadingModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="loading-spinner"></div>
+            <h3>Creating Inscription</h3>
+            <p id="loadingMessage">Preparing transaction...</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="resultModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="result-header">
+                <h3 id="resultTitle">Inscription Created!</h3>
+                <button class="close-btn" id="closeResult">✕</button>
+            </div>
+            <div id="resultContent" class="result-content">
+                <!-- Result content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

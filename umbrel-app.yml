@@ -1,0 +1,45 @@
+manifestVersion: 1
+id: ordinals-inscriber
+category: bitcoin
+name: Ordinals Inscriber
+version: "1.0.0"
+tagline: Inscribe content on Bitcoin using Ordinals
+description: >-
+  A user-friendly web interface for creating Bitcoin Ordinal inscriptions.
+  Upload images, text, or any file to permanently inscribe it on the Bitcoin
+  blockchain using your Umbrel's Bitcoin Core node.
+
+  Features include:
+  - Simple drag-and-drop file upload
+  - Real-time fee estimation
+  - Inscription preview and confirmation
+  - Wallet management and balance tracking
+  - Transaction history and status
+  - Support for metadata and custom parameters
+
+  ⚠️ Note: This app requires ord binary to be installed on your Umbrel node.
+  Please ensure ord is properly configured before using this app.
+
+releaseNotes: >-
+  Initial release with core inscription functionality:
+  - File upload and inscription creation
+  - Bitcoin wallet integration
+  - Fee estimation and transaction broadcasting
+  - Simple, intuitive user interface
+
+developer: Community
+website: https://ordinals.com
+dependencies:
+  - bitcoin
+repo: https://github.com/yourusername/ordinals-inscriber
+support: https://github.com/yourusername/ordinals-inscriber/issues
+port: 3000
+gallery:
+  - 1.jpg
+  - 2.jpg
+  - 3.jpg
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+submitter: Community
+submission: https://github.com/getumbrel/umbrel-apps/pull/xxx
