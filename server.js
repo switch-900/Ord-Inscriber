@@ -39,11 +39,18 @@ const upload = multer({
 // Utility function to execute ord commands
 const executeOrdCommand = (command, args = []) => {
   return new Promise((resolve, reject) => {
+    // Verify ord binary exists
+    if (!fs.existsSync('/usr/local/bin/ord')) {
+      reject(new Error('ord binary not found. Please ensure ord is installed.'));
+      return;
+    }
+
     const ordCommand = spawn('ord', command.split(' ').concat(args), {
       stdio: ['pipe', 'pipe', 'pipe'],
       env: {
         ...process.env,
-        BITCOIN_RPC_URL: `http://${process.env.BITCOIN_RPC_USER}:${process.env.BITCOIN_RPC_PASS}@${process.env.BITCOIN_RPC_HOST}:${process.env.BITCOIN_RPC_PORT}`
+        BITCOIN_RPC_URL: `http://${process.env.BITCOIN_RPC_USER}:${process.env.BITCOIN_RPC_PASS}@${process.env.BITCOIN_RPC_HOST}:${process.env.BITCOIN_RPC_PORT}`,
+        ORD_DATADIR: process.env.ORD_DATADIR || '/app/wallets'
       }
     });
 
