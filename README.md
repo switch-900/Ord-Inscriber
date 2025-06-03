@@ -1,3 +1,5 @@
+# Not yet in production- use at your own risk. 
+
 # Ordinals Inscriber for Umbrel
 
 A user-friendly web interface for creating Bitcoin Ordinal inscriptions on your Umbrel node.
