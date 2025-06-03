@@ -31,13 +31,13 @@ developer: Community
 website: https://ordinals.com
 dependencies:
   - bitcoin
-repo: https://github.com/switch-900/OrdInscriber
-support: https://github.com/switch-900/OrdInscriber/issues
+repo: https://github.com/switch-900/ord-Inscriber
+support: https://github.com/switch-900/ord-Inscriber/issues
 port: 3333
 gallery:
-  - 1.jpg
-  - 2.jpg
-  - 3.jpg
+  - 1.png
+  - 2.png
+  - 3.png
 path: ""
 defaultUsername: ""
 defaultPassword: ""
