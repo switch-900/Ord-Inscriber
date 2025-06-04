@@ -1,13 +1,17 @@
-# OrdInscriber Community App Store
+# OrdInscriber Community App Store - Setup Guide
 
-🎯 **Ready for Testing on Umbrel Community App Store**
+✅ **CORRECTED STRUCTURE** 
 
-This repository is now properly configured as an Umbrel Community App Store containing the OrdInscriber application.
+The community app store has been created as a **separate directory** at:
+`/mnt/c/Users/crowh/OrdInscriber-Community-Store/`
 
-## 📁 Repository Structure
+## 📁 Correct Repository Structure
+
+**THIS repository** (`OrdInscriber/`) contains your main application code.
+**SEPARATE repository** (`OrdInscriber-Community-Store/`) contains the community app store:
 
 ```
-OrdInscriber/
+OrdInscriber-Community-Store/               # ← SEPARATE REPOSITORY
 ├── umbrel-app-store.yml                    # Store configuration
 ├── ordinalscriber-ordinals-inscriber/      # App directory
 │   ├── umbrel-app.yml                      # App manifest
@@ -16,24 +20,35 @@ OrdInscriber/
 │       ├── 1.png
 │       ├── 2.png
 │       └── 3.png
-├── README-community-store.md               # This file
-└── setup-community-store.sh               # Validation script
+└── README.md                               # Community store documentation
 ```
 
-## 🚀 How to Use This Community App Store
+## 🚀 How to Deploy the Community App Store
 
-### Step 1: Publish to GitHub
-1. Create a new repository on GitHub (e.g., `OrdInscriber-Community-Store`)
-2. Push this repository to GitHub:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial community app store setup"
-   git remote add origin https://github.com/yourusername/OrdInscriber-Community-Store.git
-   git push -u origin main
-   ```
+### Step 1: Navigate to the Community Store Directory
+```bash
+cd /mnt/c/Users/crowh/OrdInscriber-Community-Store
+```
 
-### Step 2: Add to Umbrel
+### Step 2: Initialize Git Repository
+```bash
+git init
+git add .
+git commit -m "Initial OrdInscriber community app store"
+```
+
+### Step 3: Create GitHub Repository
+1. Go to GitHub and create a new repository named `OrdInscriber-Community-Store`
+2. **Do NOT initialize with README** (we already have one)
+
+### Step 4: Push to GitHub
+```bash
+git remote add origin https://github.com/yourusername/OrdInscriber-Community-Store.git
+git branch -M main
+git push -u origin main
+```
+
+### Step 5: Add to Umbrel
 1. Open your Umbrel dashboard
 2. Navigate to **App Store**
 3. Click **Community App Stores** 
@@ -41,7 +56,7 @@ OrdInscriber/
 5. Enter your repository URL: `https://github.com/yourusername/OrdInscriber-Community-Store`
 6. Click **Add**
 
-### Step 3: Install OrdInscriber
+### Step 6: Install OrdInscriber
 1. The OrdInscriber app will appear in the **Community Apps** section
 2. Click **Install** to add it to your Umbrel node
 3. The app will be available at `http://umbrel.local:3333`
